@@ -47,3 +47,42 @@ exports.signup = async (req, res) => {
     }
 
 }
+
+exports.signin = async (req, res) => {
+    try {
+        const payload = req.body;
+        const { success } = signinBody.safeParse(payload);
+        if (!success) {
+            return res.status(411).json({
+                msg:"Wrong Input"
+            })
+        }
+
+        const user = await User.findOne({
+            email:payload.email
+        });
+
+        if (!user) {
+            return res.status(411).json({
+                msg:"User doesn't exists"
+            })            
+        }
+
+        const userId = user._id;
+
+        const token = jwt.sign({userId}, JWT_SECRET);
+        
+        res.json({
+            token: token
+        })
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(411).json({
+            msg:"Somthing wrong haved with server"
+        })
+        
+        
+    }
+
+}

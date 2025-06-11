@@ -1,6 +1,22 @@
 const { planBody } = require("../types");
 const { Plan } = require('../db');
 
+exports.getCreatedplans = async (req, res)=>{
+    try {
+        const userId = req.userId;
+        const plans = await Plan.find({
+            createdBy:userId
+        });
+        res.json(plans)
+    } catch (error) {
+        console.log(error);
+        return res.status(403).json({
+            message:"kuch prioblam hai bhai"
+        })
+        
+        
+    }
+}
 exports.createplan = async (req,res) => {
     try {
         const payload = req.body;

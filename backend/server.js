@@ -5,7 +5,7 @@ const PORT = 3000;
 const cors = require('cors');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
-const planRouter = require('./routes/planRouter');
+const planRouter = require('./routes/planRoutes');
 app.use(bodyParser.json());
 app.use(cors());
 

@@ -17,6 +17,37 @@ exports.getCreatedplans = async (req, res)=>{
         
     }
 }
+exports.getSpecificPlan = async (req, res)=>{
+    try {
+        const id = req.query.id;
+        const plan = await Plan.findById(id);
+        res.json(plan)
+        
+    } catch (error) {
+        console.log(error);
+           return res.status(403).json({
+            message:"kuch prioblam hai bhai"
+        })       
+        
+    }
+}
+exports.getPlanasparticipants = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const plans = await Plan.find({
+            participants:userId
+        })
+
+        res.json(plans)
+        
+    } catch (error) {
+                console.log(error);
+           return res.status(403).json({
+            message:"kuch prioblam hai bhai"
+        }) 
+        
+    }
+}
 exports.createplan = async (req,res) => {
     try {
         const payload = req.body;

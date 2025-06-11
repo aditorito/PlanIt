@@ -70,6 +70,12 @@ exports.createplan = async (req, res) => {
             $push:{ createdPlans : plan._id}
         });
 
+        for(const participant of payload.participants){
+            await User.findByIdAndUpdate(participant,{
+                $push:{sharedPlans:plan._id}
+            })
+        }
+
         res.json({
             message: "Plan is created"
         })

@@ -1,5 +1,5 @@
 const { planBody } = require("../types");
-const { Plan } = require('../db');
+const { Plan, User } = require('../db');
 
 exports.getCreatedplans = async (req, res) => {
     try {
@@ -51,18 +51,23 @@ exports.getPlanasparticipants = async (req, res) => {
 exports.createplan = async (req, res) => {
     try {
         const payload = req.body;
+        const userid = req.userId;
         const { success } = planBody.safeParse(payload);
         if (!success) {
             return res.json({
                 message: "Wrong format"
             })
         }
-        await Plan.create({
+        const plan = await Plan.create({
             title: payload.title,
             description: payload.description,
             createdBy: req.userId,
             participants: payload.participants,
             task: payload.task
+        });
+
+        await User.findByIdAndUpdate(userid,{
+            $push:{ createdPlans : plan._id}
         });
 
         res.json({
@@ -106,4 +111,27 @@ exports.updateplan = async (req, res) => {
     }
 }
 
-exports.
+exports.deletePlan = async (req, res) => {
+    try {
+        const planid = req.query.id;
+        const userid = req.userId;
+        await Plan.findByIdAndDelete(planid);
+        await User.findByIdAndUpdate(userid, {
+            $pull:{ createdPlans: planid}
+        })
+        await User.updateMany(
+            { sharedPlans: userid},
+            { $pull: { sharedPlans: userid}}
+        )
+        res.json({
+            msg:"Plan is deleted"
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(403).json({
+            message: "kuch prioblam hai bhai"
+        })
+
+    }
+}

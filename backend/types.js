@@ -31,4 +31,5 @@ module.exports = {
     signinBody: signinBody,
     signupBody: signupBody,
     planBody: planBody,
+    taskSchema:taskSchema
 }
